@@ -11,11 +11,11 @@ public boolean isVowel(char parameter) {
         else return(false);
     }
     
-    public void testisVowel() {
+public void testisVowel() {
     char str = 'f';
     boolean result = isVowel(str);
     System.out.println(result);
-    }
+}
     
 # Write a method replaceVowels that has two parameters, a String named phrase and a Char named ch. 
 # This method should return a String that is the string phrase with all the vowels (uppercase or lowercase) replaced by ch.
@@ -50,8 +50,8 @@ public StringBuilder emphasize(StringBuilder phrase, char ch) {
         return(phrase);
     }
     
-    public void testemphasize() {
+public void testemphasize() {
         StringBuilder phrase = new StringBuilder("dna ctgaaactga");
         StringBuilder result = emphasize(phrase, 'a');
         System.out.println(result);
-    }
+}
