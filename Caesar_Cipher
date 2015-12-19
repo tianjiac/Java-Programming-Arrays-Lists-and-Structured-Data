@@ -19,13 +19,13 @@ public String encrypt(String input, int key) {
         return(newinput);
     }
     
-    public void testencrypt() {
+public void testencrypt() {
         //FileResource fr = new FileResource();
         //String message = fr.asSting();
         String message = "At noon be in the conference room with your hat on for a surprise party. YELL LOUD!";
         String result = encrypt(message, 15);
         System.out.println("key is "+ 15 + "\n" + result);
-    }
+}
     
 # Write the method encryptTwoKeys that has three parameters, a String named input, and two integers named key1 and key2. 
 # This method returns a String that has been encrypted using the following algorithm. 
@@ -95,8 +95,8 @@ public String encryptTwokeys(String input, int key1, int key2) {
         return(newinput);
     }
     
-    public void testencryptTwoKeys() {
+public void testencryptTwoKeys() {
         String message = "At noon be in the conference room with your hat on for a surprise party. YELL LOUD!";
         String result = encryptTwokeys(message, 8, 21);
         System.out.println(result);
-    }
+}
