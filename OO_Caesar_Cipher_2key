@@ -1,0 +1,154 @@
+# Using object oriented method to finish 2-key Caesar Cipher.
+
+public class CaesarCipherTwo {
+    private String alphabet;
+    private String shiftedAlphabet1;
+    private String shiftedAlphabet2;
+    private int mainKey1;
+    private int mainKey2;
+    
+    public CaesarCipherTwo(int key1, int key2) {
+        mainKey1 = key1;
+        mainKey2 = key2;
+        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        shiftedAlphabet1 = alphabet.substring(key1, 26) + alphabet.substring(0, key1);
+        shiftedAlphabet2 = alphabet.substring(key2, 26) + alphabet.substring(0, key2);
+    }
+    
+    public String encrypt(String input) {
+        int n = input.length();
+        String newinput1 = new String();
+        String newinput2 = new String();
+        String newinput = new String();
+        
+        for (int i = 0; i < n; i= i + 2) {
+            int position = alphabet.indexOf(input.substring(i, i + 1));
+            if (position == -1) {
+                position = alphabet.toLowerCase().indexOf(input.substring(i, i + 1));
+                if (position > -1) newinput1 = newinput1 + shiftedAlphabet1.substring(position, position+1).toLowerCase();
+                else newinput1 = newinput1 + input.substring(i, i + 1);
+            }
+            else if (position > -1) newinput1 = newinput1 + shiftedAlphabet2.substring(position, position+1);
+        }
+        
+        for (int i = 1; i < n; i= i + 2) {
+            int position = alphabet.indexOf(input.substring(i, i + 1));
+            if (position == -1) {
+                position = alphabet.toLowerCase().indexOf(input.substring(i, i + 1));
+                if (position > -1) newinput2 = newinput2 + shiftedAlphabet1.substring(position, position+1).toLowerCase();
+                else newinput2 = newinput2 + input.substring(i, i + 1);
+            }
+            else if (position > -1) newinput2 = newinput2 + shiftedAlphabet2.substring(position, position+1);
+        }
+        
+        int n1 = newinput1.length();
+        int n2 = newinput2.length();
+        
+        if (n1 > n2) {
+            for (int i = 0; i < n2; i++) {
+                newinput = newinput + newinput1.substring(i, i+1);
+                newinput = newinput + newinput2.substring(i, i+1);
+            }
+            newinput = newinput + newinput1.substring(n1-1, n1);
+        }
+        
+        if (n1 == n2) {
+            for (int i = 0; i < n2; i++) {
+                newinput = newinput + newinput1.substring(i, i+1);
+                newinput = newinput + newinput2.substring(i, i+1);
+            }
+        }
+        
+        if (n1 < n2) {
+            for (int i = 0; i < n1; i++) {
+                newinput = newinput + newinput1.substring(i, i+1);
+                newinput = newinput + newinput2.substring(i, i+1);
+            }
+            newinput = newinput + newinput2.substring(n2-1, n2);
+        }
+        
+        return(newinput);
+ 
+    }
+   
+    
+    public String decrypt(String input) {
+        CaesarCipherTwo cc = new CaesarCipherTwo(26-mainKey1, 26-mainKey2);
+        return(cc.encrypt(input));
+    }
+    
+    
+}
+
+
+import edu.duke.*;
+
+
+public class testCaesarCipherTwo {
+    public int [] countLetters(String message) {
+        int [] counters = new int [26];
+        for (int i = 0; i < 26; i++) {
+            counters[i] = 0;
+        }
+        System.out.println(counters);
+        String alph = "abcdefghijklmnopqrstuvwxyz";
+        message = message.toLowerCase();
+        for (int i = 0; i < message.length(); i++) {
+            int position = alph.indexOf(message.charAt(i));
+            if (position != -1) counters[position] += 1;
+        }
+        
+        return counters;
+    }
+    
+    public int maxIndex(int [] counters) {
+        int maxcounter = 0;
+        int maxposition = 0;
+        for (int i = 0; i < counters.length; i++) {
+            if (maxcounter < counters[i]) {
+                maxposition = i;
+                maxcounter = counters[i];
+            }
+        }
+        return maxposition;
+    }
+    
+    public String halfOfString(String message, int start) {
+        String result = new String();
+        for (int i = start; i < message.length(); i = i+2) {
+            result = result + message.charAt(i);
+        }
+        return result;
+    }
+    
+    public int getKey(String s) {
+        int [] freqs = countLetters(s);
+        int maxDex = maxIndex(freqs);
+        int dkey = maxDex-4;
+        if (dkey < 0) dkey = 26 - (4 - maxDex);
+        return dkey;
+    }
+    
+    public void simpleTests() {
+        FileResource fr = new FileResource();
+        String message = fr.asString();
+        CaesarCipherTwo cc = new CaesarCipherTwo(17,3);
+        String encrypted = cc.encrypt(message);
+        System.out.println("Encrypted message: "+encrypted);
+        
+        String decrypted = cc.decrypt(encrypted);
+        System.out.println("Decrypted message: "+decrypted);
+        
+        breakCaesarCipher(encrypted);
+    }
+    
+    public void breakCaesarCipher(String input) {
+        String part_1 = halfOfString(input, 0);
+        String part_2 = halfOfString(input, 1);
+        int dkey2 = getKey(part_2);
+        int dkey1 = getKey(part_1);
+        System.out.println("The two keys are " + dkey1 + " and " + dkey2);
+        CaesarCipherTwo cc = new CaesarCipherTwo(26-dkey1,26-dkey2);
+        System.out.println("Decrypted message: "+cc.decrypt(input));
+    }
+}
