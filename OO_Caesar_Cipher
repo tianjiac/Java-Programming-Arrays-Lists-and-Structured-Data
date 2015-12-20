@@ -1,0 +1,91 @@
+# Using object oriented method to finish one-key Caesar Cipher.
+
+public class CaesarCipher {
+    private String alphabet;
+    private String shiftedAlphabet;
+    private int mainKey;
+    public CaesarCipher(int key) {
+        mainKey = key;
+        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        shiftedAlphabet = alphabet.substring(key, 26) + alphabet.substring(0, key);
+    }
+    
+    public String encrypt(String input) {
+        int n = input.length();
+        String newinput = new String();
+        for (int i = 0; i < n; i++) {
+            int position = alphabet.indexOf(input.substring(i, i + 1));
+            if (position == -1) {
+                position = alphabet.toLowerCase().indexOf(input.substring(i, i + 1));
+                if (position > -1) newinput = newinput + shiftedAlphabet.substring(position, position+1).toLowerCase();
+                else newinput = newinput + input.substring(i, i + 1);
+            }
+            else if (position > -1) newinput = newinput + shiftedAlphabet.substring(position, position+1);
+        }
+        return(newinput);
+    }
+    
+    public String decrypt(String input) {
+        CaesarCipher cc = new CaesarCipher(26-mainKey);
+        return cc.encrypt(input);
+    }
+    
+}
+
+
+import edu.duke.*;
+
+public class testCaesarCipher {
+    private int [] countLetters(String message) {
+        int [] counters = new int [26];
+        for (int i = 0; i < 26; i++) {
+            counters[i] = 0;
+        }
+        System.out.println(counters);
+        String alph = "abcdefghijklmnopqrstuvwxyz";
+        message = message.toLowerCase();
+        for (int i = 0; i < message.length(); i++) {
+            int position = alph.indexOf(message.charAt(i));
+            if (position != -1) counters[position] += 1;
+        }
+        
+        return counters;
+    }
+    
+    private int maxIndex(int [] counters) {
+        int maxcounter = 0;
+        int maxposition = 0;
+        for (int i = 0; i < counters.length; i++) {
+            if (maxcounter < counters[i]) {
+                maxposition = i;
+                maxcounter = counters[i];
+            }
+        }
+        return maxposition;
+    }
+    
+    public void breakCaesarCipher(String input) {
+        int[] freqs = countLetters(input);
+        int maxDex = maxIndex(freqs);
+        int dkey = maxDex-4;
+        if (dkey < 0) dkey = 26 - (4 - maxDex);
+        System.out.println("The message was encrypted by key: "+dkey);
+        CaesarCipher cc = new CaesarCipher(dkey);
+        String decrypted = cc.decrypt(input);
+        System.out.println(decrypted);
+    }
+    
+    public void simpleTests() {
+        FileResource fr = new FileResource();
+        String message = fr.asString();
+        CaesarCipher cc = new CaesarCipher(18);
+        String encrypted = cc.encrypt(message);
+        System.out.println(encrypted);
+        String decrypted = cc.decrypt(encrypted);
+        System.out.println(decrypted);
+        
+        System.out.println("Decrypting using breakCaesarCipher: " + "\n");
+        breakCaesarCipher(encrypted);
+    }
+    
+}
