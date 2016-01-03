@@ -1,0 +1,83 @@
+# Write a program to determine the characters in one of Shakespeare’s plays that have the most speaking parts. 
+# Note that each speaking part is at the beginning of the line (there may be some blanks before it) and has a period immediately following it. 
+# Shakespeare used this format in many of his plays. 
+# Sometimes the name of the person to speak was all capitalized and sometimes it was not.
+
+# Write a program to print out the main characters in one of Shakespeare’s plays, those with the most speaking parts. 
+# You should identify a speaking part by reading the file line-by-line and finding the location of the first period on the line. 
+# Then you will assume that everything up to the first period is the name of a character and count how many times that occurs in the file. 
+# You will only print those characters that appear more often than others. 
+# Notice our method is somewhat error prone. For example, a period is also used to indicate the end of a sentence. 
+# By printing out only those characters that appear a lot, we will get rid of most of the errors. 
+# Periods that indicate the end of a sentence will likely be a unique phrase so you won’t print that as it would just occur once or maybe twice.
+
+
+import edu.duke.*;
+import java.util.*;
+
+public class CharactersInPlay {
+    private ArrayList<Integer> myFreqs;
+    private ArrayList<String> myWords;
+    
+    public CharactersInPlay() {
+        myWords = new ArrayList<String>();
+        myFreqs = new ArrayList<Integer>();
+    }
+    
+    private void update(String person) {
+        //person = person.toLowerCase();
+        int index = myWords.indexOf(person);
+        if (index == -1) {
+            myWords.add(person);
+            myFreqs.add(1);
+        }
+        else {
+            int freq = myFreqs.get(index);
+            myFreqs.set(index, freq+1);
+        }
+    }
+    
+    private void findAllCharacters() {
+        FileResource fr = new FileResource();
+        for (String line: fr.lines()) {
+            int index = line.indexOf(".");
+            if (index > -1) {
+                int nonblank = 0;
+                while (nonblank < index) {
+                    if (!line.substring(nonblank, nonblank+1).equals(" ")) break;
+                    else nonblank = nonblank + 1;
+                }
+                String person = line.substring(nonblank, index);
+                update(person);
+            }
+        }
+    }
+    
+    private int findIndexOfMax() {
+        int current = myFreqs.get(0);
+        int index = 0;
+        for (int k = 0; k < myFreqs.size(); k++) {
+            int newone = myFreqs.get(k);
+            if (newone > current) {
+                current = newone;
+                index = k;
+            }
+            
+        }
+        return index;
+    }
+    
+    private void charactersWithNumParts(int num1, int num2) {
+        for (int k = 0; k < myWords.size(); k++) {
+            if (myFreqs.get(k)>=num1 && myFreqs.get(k) <= num2) 
+                System.out.println(myWords.get(k) + ": "+ myFreqs.get(k)+ "\t");
+        }
+    }
+    
+    public void testfindAllCharacters() {
+        findAllCharacters();
+        charactersWithNumParts(10, 150);
+        int biggest = findIndexOfMax();
+        System.out.println("The word with highest frequency is: "+myWords.get(biggest)+" with "+myFreqs.get(biggest));
+    }
+}
