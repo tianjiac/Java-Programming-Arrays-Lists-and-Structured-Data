@@ -1,0 +1,65 @@
+# You will write a program to determine the word that occurs the most often in a file. 
+# If more than one word occurs as the most often, then return the first such word found. 
+# You should make all words lowercase before counting them. 
+# Thus, “This” and “this” will both be counted as the lowercase version of “this.” 
+# You should not consider punctuation, so “end” and “end,” will be considered different words. 
+
+
+import edu.duke.*;
+import java.util.*;
+
+public class WordFrequencies {
+    private ArrayList<String> myWords;
+    private ArrayList<Integer> myFreqs;
+    
+    public WordFrequencies() {
+        myWords = new ArrayList<String>();
+        myFreqs = new ArrayList<Integer>();
+    }
+    
+    private void findUnique() {
+        myWords.clear();
+        myFreqs.clear();
+        FileResource fr = new FileResource();
+        for (String word : fr.words()) {
+            word = word.toLowerCase();
+            int index = myWords.indexOf(word);
+            if (index == -1) {
+                myWords.add(word);
+                myFreqs.add(1);
+            }
+            else {
+                int freq = myFreqs.get(index);
+                myFreqs.set(index, freq+1);
+            }
+        }
+    }
+    
+    private int findIndexOfMax() {
+        int current = myFreqs.get(0);
+        int index = 0;
+        for (int k = 0; k < myFreqs.size(); k++) {
+            int newone = myFreqs.get(k);
+            if (newone > current) {
+                current = newone;
+                index = k;
+            }
+        }
+        return index;
+    }
+    
+    public void testfindUnique() {
+        findUnique();
+        for (int k = 0; k < myWords.size(); k++) {
+            System.out.println(myWords.get(k)+": "+myFreqs.get(k)+"\t");
+        }
+        int biggest = findIndexOfMax();
+        System.out.println("The word with highest frequency is: "+myWords.get(biggest)+" with "+myFreqs.get(biggest));
+        System.out.println("The number of unique words are: "+myWords.size());
+        
+    }
+    
+    
+    
+    
+}
